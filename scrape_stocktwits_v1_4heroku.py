@@ -43,6 +43,9 @@ SERVICE_ACCOUNT_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 API_NAME = 'drive'
 API_VERSION = 'v3'
 
+# project name
+gcp_project = os.environ.get('GCP_PROJECT') 
+
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('drive', 'v3', credentials=credentials)
