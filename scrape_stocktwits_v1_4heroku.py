@@ -18,8 +18,8 @@ from datetime import datetime
 import pandas as pd
 import re
 import csv
-import pickle
-import bz2
+import pickle, bz2
+import json
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -39,9 +39,13 @@ download_pbz2Id = '1NPpfVMEvLl9QpcK-jAcqIRgl0TejpzGN'
 
 """Getting Google Drive Credential and get the service module running"""
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
-SERVICE_ACCOUNT_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+
+herokuEnvVar = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 API_NAME = 'drive'
 API_VERSION = 'v3'
+
+with open(herokuEnvVar) as f:
+    SERVICE_ACCOUNT_FILE = json.load(f)
 
 # project name
 gcp_project = os.environ.get('GCP_PROJECT') 
