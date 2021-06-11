@@ -10,6 +10,10 @@
 
     Omitted local version of upload/download
     10 Jun 2021: This version is to be deployed on Heroku
+    11 Jun 2021: Add json loads GOOGLE_APPLICATION_CREDENTIALS
+                -   seems to be working on Heroku
+                -   Already downloading pickle-pandas format (pbz2), 
+                    no need parsing Dtype
 """
 import requests
 from bs4 import BeautifulSoup
@@ -176,10 +180,15 @@ def convert2Numeral(x):
 #####################################################################
 def initial_df_clean(df_toClean):
     # Converting relevant fields to datetime or numerals
-    df_toClean['created_at'] = df_toClean['created_at'].apply(lambda x: timeString_conversion(x))
-    df_toClean['volumeChange'] = df_toClean['volumeChange'].apply(lambda x: convert2Numeral(x) )
-    df_toClean['sentimentChange'] = df_toClean['sentimentChange'].apply(lambda x: convert2Numeral(x) )
-    df_toClean['trendingScore'] = df_toClean['trendingScore'].apply(lambda x: convert2Numeral(x) )
+    if df_toClean['created_at'].dtype=='datetime64[ns]':
+        pass
+    else:
+        df_toClean['created_at'] = df_toClean['created_at'].apply(lambda x: timeString_conversion(x))
+    for i in ['sentimentChange', 'trendingScore', 'volumeChange']:
+        if df_toClean[i].dtype=='float64':
+            pass
+        else:
+            df_toClean[i] = df_toClean[i].apply(lambda x: convert2Numeral(x) )
     return df_toClean
 
 #############################################################################################
