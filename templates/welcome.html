@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <title>QuantGreenHorn</title>
+    <style>
+      .banner{
+        height: 220px;
+        background-size: 100% auto;
+        background-image: url('../static/BullBearEagle.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+      .carousel-caption{
+        position: absolute;
+        top: 10px;;
+      }
+      .carousel-indicators li {
+        border-radius: 50%;
+        width: 30px;
+        height: 10px;
+        background-color: rgba(3, 20, 2, 0.082);
+      }
+
+      .carousel-indicators .active {
+        background-color: rgb(49, 216, 27);
+      }
+      .fontIcon{
+      height: 30px;
+      width: 30px;
+      filter: invert(50%);
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1 class="display-5 text-center text-success mt-3">See Intelligence of a Dumb Machine!</h1>
+    <div class="container banner mb-5"></div>
+
+    <div class="container align-items-center">
+      <div class="btn-lg">
+        <button class="btn btn-primary" type="button" data-toggle="collapse" href="" data-target="#mCollapse" role="button" aria-expanded="false" aria-controls="mCollapse" id="SG">Singapore</button>  <!-- onclick="changeImage()" -->
+        <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#mCollapse" aria-expanded="false" aria-controls="mCollapse" id="HKC">HK+China</button>  <!-- onclick="changeImage()" -->
+        <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#mCollapse" aria-expanded="false" aria-controls="mCollapse" id="US">US</button>  <!-- onclick="changeImage()" -->
+        <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#mCollapse" aria-expanded="false" aria-controls="mCollapse" id="Europe">Europe</button>  <!-- onclick="changeImage()" -->
+        <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#mCollapse" aria-expanded="false" aria-controls="mCollapse" id="ADR">ADR</button>
+        <!-- <button class="btn btn-success" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button> -->
+      </div>
+      <hr>
+      <div class="">
+        <div class="collapse multi-collapse" id="mCollapse">
+          <!-- Carousel -->
+          <div class="container">
+            <h4 class="text-center" id="country" values="SG">Country</h4>
+            <div class="carousel slide" id="carouselExampleControl" data-ride="carousel">
+              <!-- carousel-fade -->
+              <ol class="carousel-indicators">
+                <li class="active" data-target="#carouselExampleControl" data-slide-to="0"></li>
+                <li data-target="#carouselExampleControl" data-slide-to="1"></li>
+                <li data-target="#carouselExampleControl" data-slide-to="2"></li>
+              </ol>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img class="d-block w-100 border border-dark " src="img/tm_backtest_cht_10SG_largeCaps20210314W14.png" alt="first" id="img1">
+                  <div class="carousel-caption d-none d-sm-block text-info ">
+                  <h5> Past 5 Years <em>Backtest</em> Results</h5>
+                </div>
+              </div>          
+                <div class="carousel-item border border-dark">
+                  <img class="d-block w-100 " src="img/tm_mergeImg10SG_largeCaps20210314W1.jpg" alt="second" id="img2">
+
+                </div>
+                <div class="carousel-item border border-dark">
+                  <img class="d-block w-100" src="img/tm_mergeImg10SG_largeCaps20210314W4.jpg" alt="third" id="img3">
+                </div>
+
+              </div>
+              <a href="#carouselExampleControl" class="carousel-control-prev" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon fontIcon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a href="#carouselExampleControl" class="carousel-control-next" role="button" data-slide="next">
+                <span class="carousel-control-next-icon fontIcon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </div>
+          </div>    <!-- Carousel -->
+        </div> <!-- multiCollapseADR -->
+      </div>
+    </div>
+    <br class="mb-5">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="js/projFrontEnd.js"></script>
+  </body>
+</html>
