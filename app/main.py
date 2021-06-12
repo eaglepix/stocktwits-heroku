@@ -1,7 +1,8 @@
+import os
 from flask import Flask, render_template, abort, jsonify
 # from scrape_stocktwits_v1_4heroku import main
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder = os.path.join('../templates')
 
 @app.route("/")
 def welcome():
