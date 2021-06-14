@@ -23,18 +23,18 @@ import pandas as pd
 import re
 import csv
 import pickle, bz2
-# import json
+import json
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
 from apiclient import errors
 
-# MediaFileUpload
 import io, os
 # import mimetypes
-
 from requests.models import HTTPError
+
+local_gc_path = '../../googleDrive/client_secrets.json'
 
 Gfolder_id = '1l8_5w9WLpgAxw3ANmPcdapgA4stIIrgW'  # Stocktwits
 download_csv_FileId = '1lxwOtMK1XwgU9IQVqJQ8j__kdqBxLWbg' # newer version of stockTwits
@@ -44,13 +44,18 @@ download_pbz2Id = '1NPpfVMEvLl9QpcK-jAcqIRgl0TejpzGN'
 """Getting Google Drive Credential and get the service module running"""
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
-# herokuEnvVar = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+global SERVICE_ACCOUNT_FILE
 SERVICE_ACCOUNT_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 API_NAME = 'drive'
 API_VERSION = 'v3'
 
-# with open(herokuEnvVar) as f:
-#     SERVICE_ACCOUNT_FILE = json.load(f)
+if SERVICE_ACCOUNT_FILE == None:
+    print('SERVICE_ACCOUNT_FILE is NONE, look into local...')
+    try:
+        SERVICE_ACCOUNT_FILE = local_gc_path
+    except:
+        print('Error in retrieving Google Authentication file')
+        os.abort()
 
 # project name
 gcp_project = os.environ.get('GCP_PROJECT') 
@@ -292,7 +297,7 @@ def mergingAPI_df(df_stkDetails, df_trending_sentiment):
 
 ####################################################################################
 
-def main():
+def main_process():
     print('Downloading GDrive stockTwits_trending.pbz2')
     """ 2 options below to select """
     df_trendingDB = download_pbz2_Files(download_pbz2Id)
@@ -319,6 +324,7 @@ def main():
 
     """ Uploading bz2 compressed pickle file """
     print('Compress and upload to GDrive')
+    # print('Ends here, not compressed and not uploaded')
     bz2_pickleObj = bz2.compress(pickle.dumps(mergeDB))
     # mime_types = [mimetypes.guess_type(file_names[i])[0] for i in range(len(file_names))]   # check up MIME type
     
@@ -326,6 +332,9 @@ def main():
     # upload_createFiles(bz2_pickleObj, Gfolder_id, uploadFileName, '*/pbz2')
     existingFile_update(bz2_pickleObj, Gfolder_id, uploadFileName, '*/pbz2', download_pbz2Id)
 
+    return popularity, mergeDB[['ticker','trendingScore']].head(10)
+
+
 if __name__ == '__main__':
-    main()
+    main_process()
     print('Process successfully completed!')
