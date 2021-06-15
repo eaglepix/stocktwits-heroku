@@ -23,7 +23,7 @@ def startExecuting(id):
     if id == loginfile["client_id"]:
         print('Running main_process now')
         # flash('Begin executing the main process... please be VERY patient')
-        return redirect(url_for('results'))
+        return redirect(url_for('/results'))
 
     else: abort(404)
 
