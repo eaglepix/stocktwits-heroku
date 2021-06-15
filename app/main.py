@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, abort, flash, redirect
+from flask import Flask, render_template, abort, flash, redirect, jsonify
 # from scrape_stocktwits_v1_4heroku import main
 import json
 
@@ -23,20 +23,19 @@ def startExecuting(id):
     if id == loginfile["client_id"]:
         print('Running main_process now')
         # flash('Begin executing the main process... please be VERY patient')
-        # return redirect(url_for('execute'))
-        try:
-            popularity, trending = main_process()
-            return render_template(
-                "execute.html",
-                message='Top 30 popular stocks:',
-                popularity = popularity,
-                trending = trending
-                )
-        except:
-            abort(404)
+        return redirect(url_for('results'))
 
     else: abort(404)
 
-
-
-
+@app.route('/results')
+def results():
+    try:
+        popularity, trending = main_process()
+        return render_template(
+            "execute.html",
+            message='Top 30 popular stocks:',
+            popularity = popularity,
+            trending = trending
+            )
+    except:
+        abort(404)
