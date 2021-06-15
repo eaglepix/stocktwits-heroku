@@ -32,7 +32,7 @@ def results():
     try:
         popularity, trending = main_process()
         return render_template(
-            "execute.html",
+            "results.html",
             message='Top 30 popular stocks:',
             popularity = popularity,
             trending = trending
