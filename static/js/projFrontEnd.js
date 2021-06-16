@@ -14,9 +14,9 @@ jQuery(document).ready(function($){
 
   $('#SG').on({
       'click': function(){
-        $('#img1').attr('src','img/tm_backtest_cht_10SG_largeCaps20210314W14.png');
-        $('#img2').attr('src','img/tm_mergeImg10SG_largeCaps20210314W1.jpg');
-        $('#img3').attr('src','img/tm_mergeImg10SG_largeCaps20210314W4.jpg');
+        $('#img1').attr('src','https://drive.google.com/file/d/1K5zVD11NJTy13NTct3ZFvs91nSy5_cgD/view?usp=sharing');
+        $('#img2').attr('src','https://drive.google.com/file/d/19uAJ8cQDswD6eizLQQ6redKJqLg1hXz9/view?usp=sharing');
+        $('#img3').attr('src','https://drive.google.com/file/d/1hw1EOTQznRE5yE00HWknjD_KcvhiQtkh/view?usp=sharing');
         $('#country').text('Singapore');
         $('#country').css('color','blue');
        }

@@ -57,12 +57,13 @@ if SERVICE_ACCOUNT_FILE == None:
         print('Error in retrieving Google Authentication file')
         os.abort()
 
-# project name
+# # project name
 gcp_project = os.environ.get('GCP_PROJECT') 
 
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('drive', 'v3', credentials=credentials)
+
 
 #####################################################################
 def upload_createFiles(fileInMemory, Gfolder_id, file_name, mime_type):
