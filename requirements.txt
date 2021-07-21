@@ -1,5 +1,5 @@
 APScheduler==3.7.0
-flask_ccondaors==3.0.10
+flask_cors==3.0.10
 requests==2.25.1
 Flask==1.1.2
 pandas==1.2.4
