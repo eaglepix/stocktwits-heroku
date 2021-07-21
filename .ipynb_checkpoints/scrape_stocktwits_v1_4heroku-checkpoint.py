@@ -14,14 +14,10 @@
                 -   seems to be working on Heroku
                 -   Already downloading pickle-pandas format (pbz2), 
                     no need parsing Dtype
-    21 Jul 2021: Debug and Upgrade Main_Process
-                -   Return for Main_Process: short-term popularity df, 
-                    specified period (1 day) popularity df
 """
 import requests
 from bs4 import BeautifulSoup
 import time
-import datetime as dt
 from datetime import datetime
 import pandas as pd
 import re
@@ -339,21 +335,10 @@ def main_process():
     # upload_createFiles(bz2_pickleObj, Gfolder_id, uploadFileName, '*/pbz2')
     existingFile_update(bz2_pickleObj, Gfolder_id, uploadFileName, '*/pbz2', download_pbz2Id)
 
-    print(mergeDB[['ticker','trendingScore']].tail())
-
-    """Compiling Popularity over x days"""
-    popularPeriod = 1 #in previous no. of days
-    print(f'Compiling popularity over past {popularPeriod} days')
-    from_period = datetime.now() - dt.timedelta(popularPeriod)
-    mergeDB.reset_index(drop=True, inplace=True)
-    carvedOutDB = mergeDB.loc[mergeDB['created_at'] > from_period]
-    popularMidTerm = carvedOutDB[['ticker', 'title']].groupby('ticker').count().sort_values(by='title').tail(20)
-    popular_dict = carvedOutDB[['ticker','created_at','sentimentChange','trending','trendingScore','volumeChange']].groupby('ticker').last().to_dict('series')
-    for colNames in ['sentimentChange','trending','trendingScore','volumeChange']:
-        popularMidTerm[colNames] = popularMidTerm.index.map(popular_dict[colNames])
-    print('popularMidTerm:\n', popularMidTerm)
-
-    return df_trending_sentiment, popularMidTerm, popularPeriod
+    print(mergeDB['ticker','trendingScore'].tail())
+    trending = mergeDB['ticker','trendingScore'][mergeDB['ticker'] in popularity.keys()]
+    print(trending)
+    return popularity, trending
 
 
 if __name__ == '__main__':
