@@ -89,6 +89,9 @@ def welcome():
 def startExecuting(id):
     if id == loginfile["client_id"]:
         flash("Please WAIT for few minutes while we are processing the data ... ", "info")
+        # response = Response(status=200)
+        status = '200 OK'
+
         return redirect(url_for('results', id_status='OK'))
     else:
         abort(404)
@@ -116,23 +119,23 @@ def processing(id_status):
 #         abort(404)
 
 
-@app.route('/results/<id_status>')
-def results(id_status):
-    if id_status == 'OK':
+@app.route('/processing/results/')
+def results():  #id_status
+    # if id_status == 'OK':
         # try:
-        popularShort, popularMidTerm, popularPeriod = main_process()
+    popularShort, popularMidTerm, popularPeriod = main_process()
 
-        return render_template(
-            "results.html",
-            message='Stocktwits popular stocks:',
-            popularPeriod=popularPeriod,
-            table_popularity=[popularShort.to_html(
-                classes='data', header='true')],
-            table_trending=[popularMidTerm.to_html(
-                classes='data', header='true')]
-        )
+    return render_template(
+        "results.html",
+        message='Stocktwits popular stocks:',
+        popularPeriod=popularPeriod,
+        table_popularity=[popularShort.to_html(
+            classes='data', header='true')],
+        table_trending=[popularMidTerm.to_html(
+            classes='data', header='true')]
+    )
         # except:
         #     abort(404)
-    else:
-        print('Status not OK!')
-        abort(404)
+    # else:
+    #     print('Status not OK!')
+    #     abort(404)

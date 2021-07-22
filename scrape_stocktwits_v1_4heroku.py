@@ -260,9 +260,9 @@ def cleanUp(col, x):
 def getTrendingStocksSentiment(popularity):
     trending_sentiment = {}
     # popularity.keys() are the disctinct tickers over 5 min period
+    ctr = 1
     for index in popularity.keys():
         try:
-            time.sleep(1)
             x = requests.get('https://www.stocktwits.com/symbol/{}'.format(index))
             soup = BeautifulSoup(x.text, 'html.parser')
             texts = soup.findAll(text=True)
@@ -279,6 +279,9 @@ def getTrendingStocksSentiment(popularity):
                                         ]       
         except:
             pass
+        if ctr < len(popularity):
+            time.sleep(0.5)
+            ctr +=1
 
     ### clean up
     df_trending_sentiment = pd.DataFrame.from_dict(trending_sentiment, orient='index', columns=['sentimentChange', 'trending', 'trendingScore', 'volumeChange'])
