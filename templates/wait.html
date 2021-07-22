@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <script>
+        // function navigate() {
+        //     window.location.href = 'results';  // redirect when done!
+        // }
+        fetch('results') //.then(navigate); // load the slow url then navigate
+    </script>
+</head>
+
+<body>
+    {% block content %}
+
+    <br>
+    <h1>Processing Now... </h1>
+    <br><br>
+    <h3><strong>Please be patient ...</strong></h3>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ msg }}
+    </div>
+    {% endfor %}
+    {% endif%}
+    {% endwith %}
+    {% endblock content %}
+
+</body>
+
+</html>

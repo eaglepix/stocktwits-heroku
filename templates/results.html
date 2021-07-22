@@ -12,6 +12,18 @@
     <br>
     <h1>Results Page: </h1>
     <br>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ msg }}
+            </div>
+            {% endfor %}
+        {% endif%}
+    {% endwith %}
+    <br>
+
     <h3>{{message}}</h3>
     <hr>
     <div><strong>Short Term Popular Stocks:</strong>
@@ -25,6 +37,7 @@
         {{table2|safe}}
         {% endfor %}
     </div>
+
 </body>
 
 </html>

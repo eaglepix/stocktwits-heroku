@@ -302,6 +302,19 @@ def mergingAPI_df(df_stkDetails, df_trending_sentiment):
     df_stkDetails.sort_values(by='created_at', ascending=False, inplace=True)
     return df_stkDetails
 
+def popular_Xdays(mergeDB, popularPeriod):
+    """Compiling Popularity over x days"""
+    print(f'Compiling popularity over past {popularPeriod} days')
+    from_period = datetime.now() - dt.timedelta(popularPeriod)
+    mergeDB.reset_index(drop=True, inplace=True)
+    carvedOutDB = mergeDB.loc[mergeDB['created_at'] > from_period]
+    popularMidTerm = carvedOutDB[['ticker', 'title']].groupby('ticker').count().sort_values(by='title').tail(20)
+    popular_dict = carvedOutDB[['ticker','created_at','sentimentChange','trending','trendingScore','volumeChange']].groupby('ticker').last().to_dict('series')
+    for colNames in ['sentimentChange','trending','trendingScore','volumeChange']:
+        popularMidTerm[colNames] = popularMidTerm.index.map(popular_dict[colNames])
+    print('popularMidTerm:\n', popularMidTerm)
+    return popularMidTerm
+
 ####################################################################################
 
 def main_process():
@@ -322,11 +335,6 @@ def main_process():
 
     # Merging DB
     mergeDB = pd.concat([df_trendingDB,df_stkDetails])
-
-    # db_popular = {k:list(mergeDB['ticker']).count(k) for k in mergeDB['ticker']}
-    # print('Popularity from Database - Total:', len(mergeDB), dict(sorted(db_popular.items(), key=lambda item: item[1],  reverse=True)))
-    # mergeDB.sort_values(by=['created_at'], ascending=False, inplace=True)
-    # mergeDB.to_csv(r'C:\Users\kl\Documents\Python_files\Systems\Raw_data\Stocktwits\stockTwits_trending.csv', index=False)
     print(mergeDB.tail(5))
 
     """ Uploading bz2 compressed pickle file """
@@ -339,21 +347,13 @@ def main_process():
     # upload_createFiles(bz2_pickleObj, Gfolder_id, uploadFileName, '*/pbz2')
     existingFile_update(bz2_pickleObj, Gfolder_id, uploadFileName, '*/pbz2', download_pbz2Id)
 
-    print(mergeDB[['ticker','trendingScore']].tail())
-
-    """Compiling Popularity over x days"""
+    """ Compiling Popularity over x days """
     popularPeriod = 1 #in previous no. of days
-    print(f'Compiling popularity over past {popularPeriod} days')
-    from_period = datetime.now() - dt.timedelta(popularPeriod)
-    mergeDB.reset_index(drop=True, inplace=True)
-    carvedOutDB = mergeDB.loc[mergeDB['created_at'] > from_period]
-    popularMidTerm = carvedOutDB[['ticker', 'title']].groupby('ticker').count().sort_values(by='title').tail(20)
-    popular_dict = carvedOutDB[['ticker','created_at','sentimentChange','trending','trendingScore','volumeChange']].groupby('ticker').last().to_dict('series')
-    for colNames in ['sentimentChange','trending','trendingScore','volumeChange']:
-        popularMidTerm[colNames] = popularMidTerm.index.map(popular_dict[colNames])
-    print('popularMidTerm:\n', popularMidTerm)
+    popularMidTerm = popular_Xdays(mergeDB, popularPeriod)
 
     return df_trending_sentiment, popularMidTerm, popularPeriod
+
+
 
 
 if __name__ == '__main__':
