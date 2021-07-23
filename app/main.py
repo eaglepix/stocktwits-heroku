@@ -28,6 +28,7 @@ SERVICE_ACCOUNT_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 API_NAME = 'drive'
 API_VERSION = 'v3'
 ctr2 = 10
+loginfile = ''
 
 if SERVICE_ACCOUNT_FILE == None:
     print('main.py SERVICE_ACCOUNT_FILE is NONE, look into local...', ctr2)
@@ -47,6 +48,8 @@ credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('drive', 'v3', credentials=credentials)
 
+if loginfile == '':
+    loginfile = credentials
 #######################################################################
 app = Flask(__name__, template_folder=os.path.join(
     '../templates'), static_folder='../static')
@@ -88,7 +91,7 @@ def welcome():
 
 @app.route('/execute/<id>')  # <client_id>
 def startExecuting(id):
-    if id == loginfile["client_id"] or credentials["client_id"]:
+    if id == loginfile["client_id"]:
         flash("Please WAIT for few minutes while we are processing the data ... ", "info")
         # response = Response(status=200)
         status = '200 OK'
