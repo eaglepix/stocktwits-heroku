@@ -94,6 +94,7 @@ def startExecuting(id):
     # if id == int(loginfile["client_id"]):
     print(id, type(id))
     print(loginfile, type(loginfile))
+    print(credentials, type(credentials))
     flash("Please WAIT for few minutes while we are processing the data ... ", "info")
     # response = Response(status=200)
     # status = '200 OK'
@@ -127,7 +128,7 @@ def main_process_execution():
         abort(404)
 
 
-@app.route('/results/')
+@app.route('/results')
 def results():  # id_status
     # if id_status == 'OK':
     # try:
@@ -138,15 +139,16 @@ def results():  # id_status
         print(len(return_value))
     popularShort, popularMidTerm, popularPeriod = return_value
 
-    return render_template(
-        "results.html",
-        message='Stocktwits popular stocks:',
-        popularPeriod=popularPeriod,
-        table_popularity=[popularShort.to_html(
-            classes='data', header=True)],
-        table_trending=[popularMidTerm.to_html(
-            classes='data', header=True)]
-    )
+    return Response(status=200)
+    # render_template(
+    #     "results.html",
+    #     message='Stocktwits popular stocks:',
+    #     popularPeriod=popularPeriod,
+    #     table_popularity=[popularShort.to_html(
+    #         classes='data', header=True)],
+    #     table_trending=[popularMidTerm.to_html(
+    #         classes='data', header=True)]
+    # )
     # except:
     #     abort(404)
     # else:
