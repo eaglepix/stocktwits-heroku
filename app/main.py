@@ -93,7 +93,7 @@ def welcome():
 def startExecuting(id):
     # if id == int(loginfile["client_id"]):
     print(id, type(id))
-    print(loginfile["client_id"], type(loginfile["client_id"]))
+    print(loginfile, type(loginfile))
     flash("Please WAIT for few minutes while we are processing the data ... ", "info")
     # response = Response(status=200)
     # status = '200 OK'
