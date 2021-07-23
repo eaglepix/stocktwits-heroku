@@ -89,16 +89,18 @@ def welcome():
     return render_template("welcome.html")
 
 
-@app.route('/execute/<int:id>')  # <client_id>
+@app.route('/execute/<id>')  # <client_id>
 def startExecuting(id):
-    if id == int(loginfile["client_id"]):
-        flash("Please WAIT for few minutes while we are processing the data ... ", "info")
-        # response = Response(status=200)
-        # status = '200 OK'
-        # session['id_status'] = status
-        return redirect(url_for('results'))
-    else:
-        abort(404)
+    # if id == int(loginfile["client_id"]):
+    print(id, type(id))
+    print(loginfile["client_id"], type(loginfile["client_id"]))
+    flash("Please WAIT for few minutes while we are processing the data ... ", "info")
+    # response = Response(status=200)
+    # status = '200 OK'
+    # session['id_status'] = status
+    return redirect(url_for('results'))
+    # else:
+    #     abort(404)
 
 
 @app.route('/processing/')
