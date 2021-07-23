@@ -88,7 +88,7 @@ def welcome():
 
 @app.route('/execute/<id>')  # <client_id>
 def startExecuting(id):
-    if id == loginfile["client_id"]:
+    if id == loginfile["client_id"] or credentials["client_id"]:
         flash("Please WAIT for few minutes while we are processing the data ... ", "info")
         # response = Response(status=200)
         status = '200 OK'
