@@ -1,5 +1,5 @@
 import gunicorn
-from flask import Flask, render_template, abort, redirect, jsonify, request, make_response, flash, session 
+from flask import Flask, render_template, abort, redirect, jsonify, request, make_response, flash, session
 from flask_cors import CORS
 # from scrape_stocktwits_v1_4heroku import main
 import json
@@ -89,7 +89,7 @@ def welcome():
     return render_template("welcome.html")
 
 
-@app.route('/execute/<id>')  # <client_id>
+@app.route('/execute/<int:id>')  # <client_id>
 def startExecuting(id):
     if id == int(loginfile["client_id"]):
         flash("Please WAIT for few minutes while we are processing the data ... ", "info")
@@ -126,14 +126,14 @@ def main_process_execution():
 
 
 @app.route('/results/')
-def results():  #id_status
+def results():  # id_status
     # if id_status == 'OK':
-        # try:
+    # try:
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         future = executor.submit(main_process, )
         return_value = future.result()
-        print(len(return_value) )
+        print(len(return_value))
     popularShort, popularMidTerm, popularPeriod = return_value
 
     return render_template(
@@ -145,12 +145,11 @@ def results():  #id_status
         table_trending=[popularMidTerm.to_html(
             classes='data', header=True)]
     )
-        # except:
-        #     abort(404)
+    # except:
+    #     abort(404)
     # else:
     #     print('Status not OK!')
     #     abort(404)
-
 
 
 """
