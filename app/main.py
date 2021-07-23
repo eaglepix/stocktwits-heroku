@@ -1,5 +1,5 @@
 import gunicorn
-from flask import Flask, render_template, abort, redirect, jsonify, request, make_response, flash
+from flask import Flask, render_template, abort, redirect, jsonify, request, make_response, flash, session 
 from flask_cors import CORS
 # from scrape_stocktwits_v1_4heroku import main
 import json
@@ -14,7 +14,8 @@ from apiclient import errors
 
 import os
 import secrets
-import asyncio
+import concurrent.futures
+
 
 ###################################################################################
 local_gc_path = '../../googleDrive/client_secrets.json'
@@ -91,51 +92,75 @@ def startExecuting(id):
         flash("Please WAIT for few minutes while we are processing the data ... ", "info")
         # response = Response(status=200)
         status = '200 OK'
-
-        return redirect(url_for('results', id_status='OK'))
+        session['id_status'] = status
+        return redirect(url_for('results'))
     else:
         abort(404)
 
 
-@app.route('/processing/<id_status>')
-def processing(id_status):
-    if id_status == 'OK':
+@app.route('/processing/')
+def processing():
+    id_status = request.args['id_status']
+    id_status = session['id_status']
+    if id_status == id_status:
         flash("Please WAIT ... ", "info")
-        return render_template('wait.html')
-        # redirect(url_for('results'))
+        # return render_template('wait.html')
+        redirect(url_for('results'))
     else:
         abort(404)
 
 
-# @app.route('/processing/main_process')
-# def main_process_execution():
-#     try:
-#         print('Running main_process now... please be patient')
-#         global popularShort, popularMidTerm, popularPeriod
-#         popularShort, popularMidTerm, popularPeriod = main_process()
-#         return redirect(url_for('results', popularShort, popularMidTerm, popularPeriod))
+@app.route('/processing')
+def main_process_execution():
+    try:
+        print('Running main_process now... please be patient')
+        global popularShort, popularMidTerm, popularPeriod
+        popularShort, popularMidTerm, popularPeriod = main_process()
+        return redirect(url_for('results', popularShort, popularMidTerm, popularPeriod))
 
-#     except:
-#         abort(404)
+    except:
+        abort(404)
 
 
-@app.route('/processing/results/')
+@app.route('/results/')
 def results():  #id_status
     # if id_status == 'OK':
         # try:
-    popularShort, popularMidTerm, popularPeriod = main_process()
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future = executor.submit(main_process, )
+        return_value = future.result()
+        print(len(return_value) )
+    popularShort, popularMidTerm, popularPeriod = return_value
 
     return render_template(
         "results.html",
         message='Stocktwits popular stocks:',
         popularPeriod=popularPeriod,
         table_popularity=[popularShort.to_html(
-            classes='data', header='true')],
+            classes='data', header=True)],
         table_trending=[popularMidTerm.to_html(
-            classes='data', header='true')]
+            classes='data', header=True)]
     )
         # except:
         #     abort(404)
     # else:
     #     print('Status not OK!')
     #     abort(404)
+
+
+
+"""
+from flask import session, url_for
+
+def do_baz():
+    messages = json.dumps({"main":"Condition failed on page baz"})
+    session['messages'] = messages
+    return redirect(url_for('.do_foo', messages=messages))
+
+@app.route('/foo')
+def do_foo():
+    messages = request.args['messages']  # counterpart for url_for()
+    messages = session['messages']       # counterpart for session
+    return render_template("foo.html", messages=json.loads(messages))
+"""
