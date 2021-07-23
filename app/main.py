@@ -49,7 +49,7 @@ credentials = service_account.Credentials.from_service_account_file(
 service = build('drive', 'v3', credentials=credentials)
 
 if loginfile == '':
-    loginfile = credentials
+    loginfile = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 #######################################################################
 app = Flask(__name__, template_folder=os.path.join(
     '../templates'), static_folder='../static')
