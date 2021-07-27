@@ -19,7 +19,7 @@ class Config:
 
     SCHEDULER_API_ENABLED = True
 
-def job1(var_one, var_two):
+def job1():
     """job function to run main_process """
 
     from scrape_stocktwits_v1_4heroku import main_process
