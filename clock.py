@@ -1,7 +1,7 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 sched = BlockingScheduler()
-interval = 3
+interval = 1
 @sched.scheduled_job('interval', minutes=interval)
 def timed_job():
     print(f'This job is run every {interval} minutes.')

@@ -12,9 +12,9 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from apiclient import errors
 
-import os
+import os, time
 import secrets
-import concurrent.futures
+import concurrent.futures, threading, queue
 
 
 ###################################################################################
@@ -28,7 +28,7 @@ SERVICE_ACCOUNT_FILE = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
 API_NAME = 'drive'
 API_VERSION = 'v3'
 ctr2 = 10
-loginfile = ''
+loginFile = ''
 
 if SERVICE_ACCOUNT_FILE == None:
     print('main.py SERVICE_ACCOUNT_FILE is NONE, look into local...', ctr2)
@@ -36,7 +36,7 @@ if SERVICE_ACCOUNT_FILE == None:
     try:
         SERVICE_ACCOUNT_FILE = local_gc_path
         with open(SERVICE_ACCOUNT_FILE) as f:
-            loginfile = json.load(f)
+            loginFile = json.load(f)
     except:
         print('Error in retrieving Google Authentication file')
         os.abort()
@@ -48,8 +48,8 @@ credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('drive', 'v3', credentials=credentials)
 
-if loginfile == '':
-    loginfile = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+if loginFile == '':
+    loginFile = os.environ.get('local_id')
 #######################################################################
 app = Flask(__name__, template_folder=os.path.join(
     '../templates'), static_folder='../static')
@@ -89,71 +89,82 @@ def welcome():
     return render_template("welcome.html")
 
 
-@app.route('/execute/<id>')  # <client_id>
+@app.route('/execute/<int:id>')  # <client_id>
 def startExecuting(id):
-    # if id == int(loginfile["client_id"]):
-    print(id, type(id))
-    print(loginfile, type(loginfile))
-    print(credentials, type(credentials))
-    flash("Please WAIT for few minutes while we are processing the data ... ", "info")
-    # response = Response(status=200)
-    # status = '200 OK'
-    # session['id_status'] = status
-    return redirect(url_for('results'))
-    # else:
-    #     abort(404)
+    if id == int(loginFile["client_id"]):
 
-
-@app.route('/processing/')
-def processing():
-    id_status = request.args['id_status']
-    id_status = session['id_status']
-    if id_status == id_status:
-        flash("Please WAIT ... ", "info")
-        # return render_template('wait.html')
-        redirect(url_for('results'))
+        flash("Please WAIT for few minutes while we are processing the data ... ", "info")
+        # response = Response(status=200)
+        # status = '200 OK'
+        # session['id_status'] = status
+        return redirect(url_for('main_process_execution')) # Use the function name here
     else:
+        print('loginFile not match with:', id)
         abort(404)
 
 
-@app.route('/processing')
+# @app.route('/processing/')
+# def processing():
+#     id_status = request.args['id_status']
+#     id_status = session['id_status']
+#     if id_status == id_status:
+#         flash("Please WAIT ... ", "info")
+#         redirect(url_for('results'))
+#     else:
+#         abort(404)
+
+# For Option 2
+# my_queue = queue.Queue()
+# def storeInQueue(f):
+#     def wrapper(*args):
+#         my_queue.put(f(*args))
+#         return wrapper
+# @storeInQueue
+# def execute_Main():
+#     return main_process()
+
+@app.route('/wait')
 def main_process_execution():
     try:
         print('Running main_process now... please be patient')
         global popularShort, popularMidTerm, popularPeriod
-        popularShort, popularMidTerm, popularPeriod = main_process()
-        return redirect(url_for('results', popularShort, popularMidTerm, popularPeriod))
+        """ Option 1: Using ThreadPool """
+        # with concurrent.futures.ThreadPoolExecutor() as executor:
+        #     future = executor.submit(main_process, )
+        #     return_value = future.result()
+        #     print(len(return_value))
+        # popularShort, popularMidTerm, popularPeriod = return_value
+        """Gave up... still not working - it is blocking, and return 500 eventually"""
 
+        """ Option 2: Use threading """
+        # t = threading.Thread(target=execute_Main)
+        # t.start()
+        # popularShort, popularMidTerm, popularPeriod = my_queue.get()
+
+        # popularShort, popularMidTerm, popularPeriod = main_process()
+        print('going to wait.html')
+        time.sleep(3)
+        return render_template('wait.html')
+        # return redirect(url_for('results', popularShort, popularMidTerm, popularPeriod))
     except:
         abort(404)
 
 
-@app.route('/results')
-def results():  # id_status
-    # if id_status == 'OK':
-    # try:
+@app.route('/execute/results')
+def results():
+    try:
+        render_template(
+            "results.html",
+            message='Stocktwits popular stocks:',
+            popularPeriod=popularPeriod,
+            table_popularity=[popularShort.to_html(
+                classes='data', header=True)],
+            table_trending=[popularMidTerm.to_html(
+                classes='data', header=True)]
+        )
+    except:
+        abort(404)
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        future = executor.submit(main_process, )
-        return_value = future.result()
-        print(len(return_value))
-    popularShort, popularMidTerm, popularPeriod = return_value
-
-    return Response(status=200)
-    # render_template(
-    #     "results.html",
-    #     message='Stocktwits popular stocks:',
-    #     popularPeriod=popularPeriod,
-    #     table_popularity=[popularShort.to_html(
-    #         classes='data', header=True)],
-    #     table_trending=[popularMidTerm.to_html(
-    #         classes='data', header=True)]
-    # )
-    # except:
-    #     abort(404)
-    # else:
-    #     print('Status not OK!')
-    #     abort(404)
 
 
 """
